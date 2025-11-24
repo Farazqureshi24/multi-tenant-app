@@ -1,0 +1,195 @@
+<!-- This file can be used for debugging tenant detection -->
+<!-- Place in public folder and access via: https://your-app.vercel.app/tenant-info.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenant Debug Info</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 25px;
+            font-size: 24px;
+        }
+        .info-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-section:last-child {
+            border-bottom: none;
+        }
+        .label {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .value {
+            color: #333;
+            font-size: 14px;
+            word-break: break-all;
+            background: #f5f5f5;
+            padding: 10px 12px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        .links {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .link-button {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 13px;
+            transition: background 0.2s;
+        }
+        .link-button:hover {
+            background: #764ba2;
+        }
+        .link-button.secondary {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .link-button.secondary:hover {
+            background: #d0d0d0;
+        }
+        .error {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            border-radius: 4px;
+            color: #c62828;
+            font-size: 13px;
+        }
+        .success {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            border-radius: 4px;
+            color: #2e7d32;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Tenant Debug Information</h1>
+        
+        <div class="info-section">
+            <div class="label">Current Hostname</div>
+            <div class="value" id="hostname">-</div>
+        </div>
+
+        <div class="info-section">
+            <div class="label">Detected Tenant ID</div>
+            <div class="value" id="tenantId">-</div>
+        </div>
+
+        <div class="info-section">
+            <div class="label">Query Parameters</div>
+            <div class="value" id="queryParams">-</div>
+        </div>
+
+        <div class="info-section">
+            <div class="label">Full URL</div>
+            <div class="value" id="fullUrl">-</div>
+        </div>
+
+        <div class="info-section">
+            <div class="label">Status</div>
+            <div id="status">-</div>
+        </div>
+
+        <div class="links">
+            <a href="/?tenant=tenant1" class="link-button">Load Tenant 1</a>
+            <a href="/?tenant=tenant2" class="link-button">Load Tenant 2</a>
+            <a href="/" class="link-button secondary">Go to App</a>
+        </div>
+    </div>
+
+    <script>
+        // Display debug information
+        function updateDebugInfo() {
+            // Hostname
+            document.getElementById('hostname').textContent = window.location.hostname;
+
+            // Query Parameters
+            const params = new URLSearchParams(window.location.search);
+            const queryTenant = params.get('tenant');
+            document.getElementById('queryParams').textContent = 
+                queryTenant ? `tenant=${queryTenant}` : '(none)';
+
+            // Full URL
+            document.getElementById('fullUrl').textContent = window.location.href;
+
+            // Detect Tenant ID
+            let detectedTenant = 'unknown';
+            
+            // Check query param first
+            if (queryTenant) {
+                detectedTenant = queryTenant;
+            } else {
+                const hostname = window.location.hostname;
+                
+                if (hostname === 'localhost' || hostname.startsWith('localhost:')) {
+                    detectedTenant = 'tenant1 (default for localhost)';
+                } else {
+                    const parts = hostname.split('.');
+                    if (parts.length >= 3) {
+                        detectedTenant = parts[0];
+                    }
+                }
+            }
+
+            document.getElementById('tenantId').textContent = detectedTenant;
+
+            // Status
+            const statusDiv = document.getElementById('status');
+            if (queryTenant === 'tenant1' || queryTenant === 'tenant2') {
+                statusDiv.innerHTML = `<div class="success">✓ Valid tenant parameter detected</div>`;
+            } else if (detectedTenant === 'unknown') {
+                statusDiv.innerHTML = `<div class="error">✗ Could not detect tenant. Use query parameter: ?tenant=tenant1</div>`;
+            } else {
+                statusDiv.innerHTML = `<div class="success">✓ Tenant detected: ${detectedTenant}</div>`;
+            }
+        }
+
+        // Update on page load
+        window.addEventListener('load', updateDebugInfo);
+        updateDebugInfo();
+    </script>
+</body>
+</html>

@@ -51,37 +51,88 @@ export class TenantService {
       const tenant = this.tenantsConfig.tenants[tenantId];
       
       if (tenant) {
+        console.log(`Loaded tenant: ${tenantId} (${tenant.name})`);
         this.currentTenant.set(tenant);
         this.applyTheme(tenant);
       } else {
-        throw new Error(`Tenant ${tenantId} not found in configuration`);
+        console.warn(`Tenant "${tenantId}" not found. Using default tenant.`);
+        const defaultTenantId = this.tenantsConfig.defaultTenant;
+        const defaultTenant = this.tenantsConfig.tenants[defaultTenantId];
+        
+        if (defaultTenant) {
+          console.log(`Loaded default tenant: ${defaultTenantId} (${defaultTenant.name})`);
+          this.currentTenant.set(defaultTenant);
+          this.applyTheme(defaultTenant);
+        } else {
+          throw new Error(`Default tenant "${defaultTenantId}" not found in configuration`);
+        }
       }
       
       this.configLoaded.set(true);
     } catch (error) {
       console.error('Failed to load tenant configuration:', error);
-      throw error;
+      // Set a minimal default to prevent complete app failure
+      const fallbackTenant: TenantConfig = {
+        id: 'fallback',
+        name: 'Default Tenant',
+        domain: 'localhost',
+        subdomain: 'localhost',
+        logo: 'assets/logos/techcorp-logo.svg',
+        favicon: 'assets/favicons/techcorp-favicon.ico',
+        layout: 'sidenav',
+        primaryColor: '#1976d2',
+        secondaryColor: '#ff4081',
+        accentColor: '#00bcd4',
+        successColor: '#4caf50',
+        warningColor: '#ff9800',
+        errorColor: '#f44336',
+        appName: 'Dashboard',
+        description: 'Multi-Tenant Application'
+      };
+      this.currentTenant.set(fallbackTenant);
+      this.applyTheme(fallbackTenant);
+      this.configLoaded.set(true);
     }
   }
 
   private getCurrentTenantId(): string {
     const hostname = window.location.hostname;
     
-    // Extract subdomain from hostname
-    // For localhost development, use query param or environment variable
+    // First, check query param (highest priority for flexibility)
+    const params = new URLSearchParams(window.location.search);
+    const queryTenant = params.get('tenant');
+    if (queryTenant) {
+      return queryTenant;
+    }
+
+    // For localhost development, use environment or default
     if (hostname === 'localhost' || hostname.startsWith('localhost:')) {
-      const params = new URLSearchParams(window.location.search);
-      return params.get('tenant') || 'tenant1';
+      return 'tenant1';
     }
 
     // For production, extract subdomain
     const parts = hostname.split('.');
     if (parts.length >= 3) {
       const subdomain = parts[0];
-      return subdomain;
+      
+      // Check if extracted subdomain exists in config
+      if (this.tenantsConfig && this.tenantsConfig.tenants[subdomain]) {
+        return subdomain;
+      }
+      
+      // For Vercel or other deployments with auto-generated subdomains,
+      // check if subdomain matches any configured tenant's domain pattern
+      if (this.tenantsConfig) {
+        for (const [tenantId, tenantConfig] of Object.entries(this.tenantsConfig.tenants)) {
+          if (tenantConfig.subdomain === subdomain) {
+            return tenantId;
+          }
+        }
+      }
     }
 
-    return 'tenant1';
+    // Fallback to default tenant
+    return this.tenantsConfig?.defaultTenant || 'tenant1';
   }
 
   private applyTheme(tenant: TenantConfig): void {
