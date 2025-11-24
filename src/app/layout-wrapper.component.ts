@@ -135,4 +135,7 @@ export class LayoutWrapperComponent implements OnInit {
     const url = `${protocol}//${host}${pathname}?tenant=${tenantId}&showSwitcher=true`;
     window.location.href = url;
   }
+  ngafterViewInit(): void {     
+    
+  }
 }
