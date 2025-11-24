@@ -112,13 +112,20 @@ export class LayoutWrapperComponent implements OnInit {
   }
 
   isDevelopment(): boolean {
-    // Show on localhost OR if query param 'showSwitcher=true' is present
-    const params = new URLSearchParams(window.location.search);
-    const showSwitcher = params.get('showSwitcher') === 'true';
+    // Show on localhost (always)
+    if (window.location.hostname === 'localhost' || 
+        window.location.hostname.startsWith('localhost:')) {
+      return true;
+    }
     
-    return showSwitcher || 
-           window.location.hostname === 'localhost' || 
-           window.location.hostname.startsWith('localhost:');
+    // Show on Vercel deployments (*.vercel.app)
+    if (window.location.hostname.includes('vercel.app')) {
+      return true;
+    }
+    
+    // Show if query param is present (for custom domains)
+    const params = new URLSearchParams(window.location.search);
+    return params.get('showSwitcher') === 'true';
   }
 
   isTenant(tenantId: string): boolean {
@@ -134,8 +141,5 @@ export class LayoutWrapperComponent implements OnInit {
     // Redirect to same domain with different tenant query param
     const url = `${protocol}//${host}${pathname}?tenant=${tenantId}&showSwitcher=true`;
     window.location.href = url;
-  }
-  ngafterViewInit(): void {     
-    
   }
 }
