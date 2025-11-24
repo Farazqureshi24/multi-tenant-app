@@ -9,14 +9,14 @@ import { TopnavLayoutComponent } from './layouts/topnav-layout/topnav-layout.com
   standalone: true,
   imports: [CommonModule, SidenavLayoutComponent, TopnavLayoutComponent],
   template: `
-    <!-- Tenant Switcher for Development (Bottom Left) -->
+    <!-- Tenant Switcher (visible on localhost or with ?showSwitcher=true) -->
     <div class="tenant-switcher" *ngIf="isDevelopment()">
-      <div class="switcher-label">Switch Tenant:</div>
-      <button (click)="switchTenant('tenant1')" [class.active]="isTenant('tenant1')">
-        TechCorp
+      <div class="switcher-label">🔄 Switch:</div>
+      <button (click)="switchTenant('tenant1')" [class.active]="isTenant('tenant1')" title="Switch to TechCorp (Sidenav Layout)">
+        🏢 TechCorp
       </button>
-      <button (click)="switchTenant('tenant2')" [class.active]="isTenant('tenant2')">
-        FinanceHub
+      <button (click)="switchTenant('tenant2')" [class.active]="isTenant('tenant2')" title="Switch to FinanceHub (Topnav Layout)">
+        💰 FinanceHub
       </button>
     </div>
 
@@ -112,7 +112,12 @@ export class LayoutWrapperComponent implements OnInit {
   }
 
   isDevelopment(): boolean {
-    return window.location.hostname === 'localhost' || 
+    // Show on localhost OR if query param 'showSwitcher=true' is present
+    const params = new URLSearchParams(window.location.search);
+    const showSwitcher = params.get('showSwitcher') === 'true';
+    
+    return showSwitcher || 
+           window.location.hostname === 'localhost' || 
            window.location.hostname.startsWith('localhost:');
   }
 
@@ -121,7 +126,13 @@ export class LayoutWrapperComponent implements OnInit {
   }
 
   switchTenant(tenantId: string): void {
-    // Redirect to same app with different tenant query param
-    window.location.href = `http://localhost:4200/?tenant=${tenantId}`;
+    // Get current protocol and host
+    const protocol = window.location.protocol;
+    const host = window.location.host;
+    const pathname = window.location.pathname;
+    
+    // Redirect to same domain with different tenant query param
+    const url = `${protocol}//${host}${pathname}?tenant=${tenantId}&showSwitcher=true`;
+    window.location.href = url;
   }
 }

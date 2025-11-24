@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multi-Tenant App - Tenant Switcher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            width: 100%;
+            padding: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+        
+        .section {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section:last-child {
+            border-bottom: none;
+        }
+        
+        .section h2 {
+            color: #667eea;
+            font-size: 16px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+        
+        .link-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+        
+        .link-card {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .link-card:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+        }
+        
+        .link-card a {
+            text-decoration: none;
+            color: #333;
+            display: block;
+        }
+        
+        .card-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        
+        .card-description {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 10px;
+        }
+        
+        .card-url {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 4px;
+            padding: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            word-break: break-all;
+            color: #555;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .tenant-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-right: 5px;
+            text-transform: uppercase;
+        }
+        
+        .tenant-badge.t1 {
+            background: rgba(25, 118, 210, 0.15);
+            color: #1976d2;
+        }
+        
+        .tenant-badge.t2 {
+            background: rgba(46, 125, 50, 0.15);
+            color: #2e7d32;
+        }
+        
+        .icon {
+            font-size: 16px;
+            margin-right: 5px;
+        }
+        
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #1976d2;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #0d47a1;
+        }
+        
+        .info-box.success {
+            background: #e8f5e9;
+            border-left-color: #2e7d32;
+            color: #1b5e20;
+        }
+        
+        .quick-access {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .quick-btn.t1 {
+            background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+            color: white;
+        }
+        
+        .quick-btn.t1:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
+        }
+        
+        .quick-btn.t2 {
+            background: linear-gradient(135deg, #2e7d32 0%, #27632a 100%);
+            color: white;
+        }
+        
+        .quick-btn.t2:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.4);
+        }
+        
+        .credentials-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+            margin-top: 10px;
+        }
+        
+        .credentials-table th,
+        .credentials-table td {
+            padding: 8px 10px;
+            text-align: left;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .credentials-table th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #667eea;
+        }
+        
+        .credentials-table td {
+            color: #555;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .credentials-table .role {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .credentials-table .role.admin {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .credentials-table .role.user {
+            background: #d1ecf1;
+            color: #0c5460;
+        }
+        
+        code {
+            background: #f5f5f5;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .link-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .quick-btn {
+                min-width: auto;
+                flex: auto;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🏢 Multi-Tenant App Switcher</h1>
+        <p class="subtitle">Quick access and tenant switching guide</p>
+        
+        <!-- Quick Access Buttons -->
+        <div class="section">
+            <h2>⚡ Quick Access (Vercel)</h2>
+            <div class="quick-access">
+                <a href="https://multi-tenant-app-kdm1.vercel.app/?tenant=tenant1&showSwitcher=true" class="quick-btn t1" target="_blank">
+                    🏢 TechCorp
+                </a>
+                <a href="https://multi-tenant-app-kdm1.vercel.app/?tenant=tenant2&showSwitcher=true" class="quick-btn t2" target="_blank">
+                    💰 FinanceHub
+                </a>
+            </div>
+            <div class="info-box success">✓ Click buttons above to open app with tenant switcher visible</div>
+        </div>
+        
+        <!-- Development Links -->
+        <div class="section">
+            <h2>💻 Development (Localhost)</h2>
+            <div class="link-grid">
+                <div class="link-card">
+                    <a href="http://localhost:4200/?tenant=tenant1" target="_blank">
+                        <div class="card-title"><span class="icon">🏢</span>TechCorp (Default)</div>
+                        <div class="card-description">Blue theme, Sidenav layout</div>
+                        <div class="card-url">localhost:4200/?tenant=tenant1</div>
+                    </a>
+                </div>
+                <div class="link-card">
+                    <a href="http://localhost:4200/?tenant=tenant2" target="_blank">
+                        <div class="card-title"><span class="icon">💰</span>FinanceHub</div>
+                        <div class="card-description">Green theme, Topnav layout</div>
+                        <div class="card-url">localhost:4200/?tenant=tenant2</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Vercel Links -->
+        <div class="section">
+            <h2>🚀 Production (Vercel)</h2>
+            <div class="info-box">
+                Append <code>&showSwitcher=true</code> to enable tenant switcher buttons
+            </div>
+            <div class="link-grid">
+                <div class="link-card">
+                    <a href="https://multi-tenant-app-kdm1.vercel.app/?tenant=tenant1&showSwitcher=true" target="_blank">
+                        <div class="card-title"><span class="icon">🏢</span>TechCorp</div>
+                        <div class="card-description">With switcher visible</div>
+                        <div class="card-url">vercel.app/?tenant=tenant1&showSwitcher=true</div>
+                    </a>
+                </div>
+                <div class="link-card">
+                    <a href="https://multi-tenant-app-kdm1.vercel.app/?tenant=tenant2&showSwitcher=true" target="_blank">
+                        <div class="card-title"><span class="icon">💰</span>FinanceHub</div>
+                        <div class="card-description">With switcher visible</div>
+                        <div class="card-url">vercel.app/?tenant=tenant2&showSwitcher=true</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Test Credentials -->
+        <div class="section">
+            <h2>🔑 Test Credentials</h2>
+            
+            <h3 style="color: #1976d2; font-size: 13px; margin: 15px 0 10px; font-weight: 600;">
+                <span class="tenant-badge t1">Tenant 1</span> TechCorp
+            </h3>
+            <table class="credentials-table">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="role admin">Admin</span></td>
+                        <td>admin@techcorp.com</td>
+                        <td>password</td>
+                    </tr>
+                    <tr>
+                        <td><span class="role user">User</span></td>
+                        <td>user@techcorp.com</td>
+                        <td>password</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <h3 style="color: #2e7d32; font-size: 13px; margin: 20px 0 10px; font-weight: 600;">
+                <span class="tenant-badge t2">Tenant 2</span> FinanceHub
+            </h3>
+            <table class="credentials-table">
+                <thead>
+                    <tr>
+                        <th>Role</th>
+                        <th>Email</th>
+                        <th>Password</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><span class="role admin">Admin</span></td>
+                        <td>admin@financehub.com</td>
+                        <td>password</td>
+                    </tr>
+                    <tr>
+                        <td><span class="role user">User</span></td>
+                        <td>user@financehub.com</td>
+                        <td>password</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Features Comparison -->
+        <div class="section">
+            <h2>🎯 Features Comparison</h2>
+            <div class="link-grid">
+                <div class="link-card">
+                    <div style="padding: 5px;">
+                        <div class="tenant-badge t1" style="margin-bottom: 10px;">TechCorp</div>
+                        <div style="color: #555; font-size: 13px; line-height: 1.6;">
+                            <strong>Layout:</strong> Left Sidebar<br/>
+                            <strong>Color:</strong> Blue (#1976d2)<br/>
+                            <strong>Logo:</strong> Tech Symbol<br/>
+                            <strong>Pages:</strong> Dashboard, Users, Settings, Help
+                        </div>
+                    </div>
+                </div>
+                <div class="link-card">
+                    <div style="padding: 5px;">
+                        <div class="tenant-badge t2" style="margin-bottom: 10px;">FinanceHub</div>
+                        <div style="color: #555; font-size: 13px; line-height: 1.6;">
+                            <strong>Layout:</strong> Top Navigation<br/>
+                            <strong>Color:</strong> Green (#2e7d32)<br/>
+                            <strong>Logo:</strong> Finance Symbol<br/>
+                            <strong>Pages:</strong> Dashboard, Accounts, Transactions, Reports, Settings
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
