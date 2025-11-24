@@ -1,0 +1,75 @@
+<div class="sidenav-container">
+  <mat-toolbar color="primary" class="header">
+    <button mat-icon-button (click)="toggleSidenav()" class="menu-toggle">
+      <mat-icon>menu</mat-icon>
+    </button>
+    
+    <div class="logo-section">
+      <img *ngIf="tenantService.getTenant()?.logo" 
+           [src]="tenantService.getTenant()?.logo" 
+           alt="Logo"
+           class="logo">
+      <span class="app-name">{{ tenantService.getTenant()?.appName }}</span>
+    </div>
+
+    <div class="header-spacer"></div>
+
+    <button mat-icon-button (click)="toggleTheme()" [matTooltip]="isDarkMode() ? 'Light Mode' : 'Dark Mode'">
+      <mat-icon>{{ isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="userMenu">
+      <mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon>
+    </button>
+
+    <button mat-icon-button [matMenuTriggerFor]="accountMenu">
+      <mat-icon>account_circle</mat-icon>
+    </button>
+
+    <mat-menu #userMenu="matMenu">
+      <button mat-menu-item>Notification 1</button>
+      <button mat-menu-item>Notification 2</button>
+      <button mat-menu-item>Notification 3</button>
+    </mat-menu>
+
+    <mat-menu #accountMenu="matMenu">
+      <div class="menu-header">
+        <p><strong>{{ authService.getCurrentUser()?.fullName }}</strong></p>
+        <p class="user-email">{{ authService.getCurrentUser()?.email }}</p>
+        <p class="user-role" [class.admin]="authService.isAdmin()">
+          {{ authService.getCurrentUser()?.role | uppercase }}
+        </p>
+      </div>
+      <mat-divider></mat-divider>
+      <button mat-menu-item>Profile</button>
+      <button mat-menu-item>Settings</button>
+      <mat-divider></mat-divider>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span>Logout</span>
+      </button>
+    </mat-menu>
+  </mat-toolbar>
+
+  <mat-sidenav-container class="sidenav-content">
+    <mat-sidenav 
+      #sidenav 
+      [opened]="sidenavOpened()" 
+      mode="side"
+      class="sidebar">
+      <mat-nav-list>
+        <h2 matSubheader>Navigation</h2>
+        <mat-list-item *ngFor="let item of navigationItems" [routerLink]="item.route">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </mat-list-item>
+      </mat-nav-list>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="main-content">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>

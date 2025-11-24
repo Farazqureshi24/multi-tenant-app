@@ -1,0 +1,39 @@
+{
+  "tenants": {
+    "tenant1": {
+      "id": "tenant1",
+      "name": "TechCorp",
+      "domain": "tenant1.domain.com",
+      "subdomain": "tenant1",
+      "logo": "assets/logos/techcorp-logo.svg",
+      "favicon": "assets/favicons/techcorp-favicon.ico",
+      "layout": "sidenav",
+      "primaryColor": "#1976d2",
+      "secondaryColor": "#ff4081",
+      "accentColor": "#00bcd4",
+      "successColor": "#4caf50",
+      "warningColor": "#ff9800",
+      "errorColor": "#f44336",
+      "appName": "TechCorp Dashboard",
+      "description": "Enterprise Management Platform"
+    },
+    "tenant2": {
+      "id": "tenant2",
+      "name": "FinanceHub",
+      "domain": "tenant2.domain.com",
+      "subdomain": "tenant2",
+      "logo": "assets/logos/financehub-logo.svg",
+      "favicon": "assets/favicons/financehub-favicon.ico",
+      "layout": "topnav",
+      "primaryColor": "#2e7d32",
+      "secondaryColor": "#fbc02d",
+      "accentColor": "#1a237e",
+      "successColor": "#388e3c",
+      "warningColor": "#f57c00",
+      "errorColor": "#d32f2f",
+      "appName": "FinanceHub Pro",
+      "description": "Financial Management System"
+    }
+  },
+  "defaultTenant": "tenant1"
+}

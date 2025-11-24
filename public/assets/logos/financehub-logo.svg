@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <rect width="200" height="60" fill="#2e7d32" rx="4"/>
+  <rect x="15" y="15" width="10" height="30" fill="white"/>
+  <rect x="30" y="22" width="10" height="23" fill="white"/>
+  <rect x="45" y="10" width="10" height="35" fill="white"/>
+  <text x="65" y="40" font-family="Arial, sans-serif" font-size="20" font-weight="bold" fill="white">FinanceHub</text>
+</svg>

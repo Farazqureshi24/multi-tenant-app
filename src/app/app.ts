@@ -1,5 +1,6 @@
-import { Component, signal } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import { TenantService } from './services/tenant.service';
 
 @Component({
   selector: 'app-root',
@@ -7,6 +8,10 @@ import { RouterOutlet } from '@angular/router';
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  protected readonly title = signal('multi-tenant-app');
+export class App implements OnInit {
+  constructor(public tenantService: TenantService) {}
+
+  ngOnInit(): void {
+    console.log('App initialized with tenant:', this.tenantService.getTenant());
+  }
 }

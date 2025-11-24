@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60">
+  <rect width="200" height="60" fill="#1976d2" rx="4"/>
+  <circle cx="25" cy="30" r="15" fill="white"/>
+  <path d="M25 18 L30 30 L25 42 L20 30 Z" fill="#1976d2"/>
+  <text x="55" y="40" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">TechCorp</text>
+</svg>

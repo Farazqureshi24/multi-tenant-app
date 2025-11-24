@@ -1,0 +1,309 @@
+<div class="admin-container">
+  <div class="admin-header">
+    <div class="header-content">
+      <h1>
+        <mat-icon>admin_panel_settings</mat-icon>
+        Admin Panel
+      </h1>
+      <p class="subtitle">Manage users, security, and system settings</p>
+    </div>
+    <button mat-raised-button color="primary" routerLink="/dashboard">
+      <mat-icon>arrow_back</mat-icon>
+      Back to Dashboard
+    </button>
+  </div>
+
+  <mat-tab-group>
+    <!-- Users Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">people</mat-icon>
+        User Management
+      </ng-template>
+
+      <div class="tab-content">
+        <mat-card class="card-header">
+          <mat-card-header>
+            <mat-card-title>Users</mat-card-title>
+            <button mat-raised-button color="primary" class="add-user-btn">
+              <mat-icon>person_add</mat-icon>
+              Add New User
+            </button>
+          </mat-card-header>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-content>
+            <table mat-table [dataSource]="usersData" class="users-table">
+              <!-- ID Column -->
+              <ng-container matColumnDef="id">
+                <th mat-header-cell *matHeaderCellDef>ID</th>
+                <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+              </ng-container>
+
+              <!-- Email Column -->
+              <ng-container matColumnDef="email">
+                <th mat-header-cell *matHeaderCellDef>Email</th>
+                <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+              </ng-container>
+
+              <!-- Name Column -->
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+
+              <!-- Role Column -->
+              <ng-container matColumnDef="role">
+                <th mat-header-cell *matHeaderCellDef>Role</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="role-badge" [class.admin]="element.role === 'Admin'">
+                    {{ element.role }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="status-badge active">{{ element.status }}</span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Security Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">security</mat-icon>
+        Security
+      </ng-template>
+
+      <div class="tab-content">
+        <div class="security-grid">
+          <mat-card class="security-card">
+            <mat-card-header>
+              <div class="card-icon green">
+                <mat-icon>check_circle</mat-icon>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <h3>System Status</h3>
+              <p class="value">All Systems Operational</p>
+              <p class="description">No security issues detected</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="security-card">
+            <mat-card-header>
+              <div class="card-icon blue">
+                <mat-icon>vpn_lock</mat-icon>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <h3>SSL/TLS Status</h3>
+              <p class="value">TLS 1.3</p>
+              <p class="description">Certificate valid until Dec 2025</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="security-card">
+            <mat-card-header>
+              <div class="card-icon orange">
+                <mat-icon>lock</mat-icon>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <h3>Password Policy</h3>
+              <p class="value">Strong</p>
+              <p class="description">Minimum 8 characters required</p>
+            </mat-card-content>
+          </mat-card>
+
+          <mat-card class="security-card">
+            <mat-card-header>
+              <div class="card-icon red">
+                <mat-icon>warning</mat-icon>
+              </div>
+            </mat-card-header>
+            <mat-card-content>
+              <h3>2FA Status</h3>
+              <p class="value">Optional</p>
+              <p class="description">5 users have 2FA enabled</p>
+            </mat-card-content>
+          </mat-card>
+        </div>
+
+        <mat-card class="activity-card">
+          <mat-card-header>
+            <mat-card-title>Recent Security Events</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-list>
+              <mat-list-item>
+                <mat-icon matListItemIcon color="warn">error</mat-icon>
+                <div matListItemTitle>Failed login attempt</div>
+                <div matListItemLine>From IP: 192.168.1.100 - 2 hours ago</div>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+
+              <mat-list-item>
+                <mat-icon matListItemIcon color="primary">vpn_lock</mat-icon>
+                <div matListItemTitle>Certificate renewed</div>
+                <div matListItemLine>SSL/TLS certificate updated - 1 day ago</div>
+              </mat-list-item>
+              <mat-divider></mat-divider>
+
+              <mat-list-item>
+                <mat-icon matListItemIcon color="accent">person_add</mat-icon>
+                <div matListItemTitle>New admin user created</div>
+                <div matListItemLine>admin@financehub.com - 3 days ago</div>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- System Logs Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">assessment</mat-icon>
+        System Logs
+      </ng-template>
+
+      <div class="tab-content">
+        <mat-card class="card-header">
+          <mat-card-header>
+            <mat-card-title>Activity Logs</mat-card-title>
+            <button mat-raised-button color="accent" (click)="exportLogs()">
+              <mat-icon>download</mat-icon>
+              Export Logs
+            </button>
+          </mat-card-header>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-content>
+            <table mat-table [dataSource]="logsData" class="logs-table">
+              <!-- Timestamp Column -->
+              <ng-container matColumnDef="timestamp">
+                <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+                <td mat-cell *matCellDef="let element">{{ element.timestamp }}</td>
+              </ng-container>
+
+              <!-- Action Column -->
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef>Action</th>
+                <td mat-cell *matCellDef="let element">{{ element.action }}</td>
+              </ng-container>
+
+              <!-- User Column -->
+              <ng-container matColumnDef="user">
+                <th mat-header-cell *matHeaderCellDef>User</th>
+                <td mat-cell *matCellDef="let element">{{ element.user }}</td>
+              </ng-container>
+
+              <!-- Status Column -->
+              <ng-container matColumnDef="status">
+                <th mat-header-cell *matHeaderCellDef>Status</th>
+                <td mat-cell *matCellDef="let element">
+                  <span class="status-badge" [class.success]="element.status === 'Success'" [class.failed]="element.status === 'Failed'">
+                    {{ element.status }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['timestamp', 'action', 'user', 'status']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['timestamp', 'action', 'user', 'status'];"></tr>
+            </table>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+
+    <!-- Settings Tab -->
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon class="tab-icon">tune</mat-icon>
+        Settings
+      </ng-template>
+
+      <div class="tab-content settings-content">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>System Configuration</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div class="settings-group">
+              <h3>General Settings</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Application Name</h4>
+                  <p>{{ tenantService.getTenant()?.appName }}</p>
+                </div>
+                <button mat-icon-button>
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Tenant ID</h4>
+                  <p>{{ tenantService.getTenant()?.id }}</p>
+                </div>
+                <button mat-icon-button disabled>
+                  <mat-icon>lock</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Security Settings</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Session Timeout</h4>
+                  <p>30 minutes of inactivity</p>
+                </div>
+                <button mat-icon-button>
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Two-Factor Authentication</h4>
+                  <p>Optional for all users</p>
+                </div>
+                <button mat-icon-button>
+                  <mat-icon>edit</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <h3>Maintenance</h3>
+              <div class="setting-item">
+                <div class="setting-info">
+                  <h4>Clear Cache</h4>
+                  <p>Remove all cached data and rebuild</p>
+                </div>
+                <button mat-raised-button color="warn" (click)="clearCache()">
+                  <mat-icon>delete_sweep</mat-icon>
+                  Clear
+                </button>
+              </div>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

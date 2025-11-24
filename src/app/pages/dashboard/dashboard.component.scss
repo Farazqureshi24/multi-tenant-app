@@ -1,0 +1,363 @@
+.dashboard-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Header Section
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--border-color, #e0e0e0);
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
+.header-content {
+  flex: 1;
+
+  h1 {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--text-color, #212121);
+  }
+
+  .subtitle {
+    margin: 4px 0 0 0;
+    font-size: 14px;
+    color: var(--text-secondary, #757575);
+  }
+}
+
+.user-badge {
+  .role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    background-color: var(--badge-bg, #e3f2fd);
+    color: var(--primary-color, #1976d2);
+    border: 1px solid var(--primary-color, #1976d2);
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+    }
+
+    &.admin {
+      background-color: #fff3e0;
+      color: #e65100;
+      border-color: #e65100;
+    }
+  }
+}
+
+// Cards Section
+.cards-section {
+  margin-bottom: 40px;
+}
+
+.section-title {
+  font-size: 18px;
+  font-weight: 500;
+  margin: 0 0 16px 0;
+  color: var(--text-color, #212121);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  mat-icon {
+    font-size: 20px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+  }
+}
+
+// Metric Cards
+.metric-card {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 8px;
+  border: 1px solid var(--card-border, #e0e0e0);
+  cursor: pointer;
+  padding: 16px;
+
+  &:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+    transform: translateY(-4px);
+  }
+
+  &.admin-card {
+    border-left: 4px solid #ff9800;
+
+    &:before {
+      content: "ADMIN ONLY";
+      display: block;
+      font-size: 10px;
+      font-weight: 700;
+      color: #ff9800;
+      margin-bottom: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  mat-card-header {
+    margin: 0 0 12px 0;
+    padding: 0;
+  }
+
+  .card-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+
+    mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      line-height: 24px;
+    }
+  }
+
+  mat-card-content {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+
+    h3 {
+      margin: 0 0 8px 0;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text-secondary, #757575);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .metric-value {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--text-color, #212121);
+    }
+
+    .metric-change {
+      margin: 0;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      &.positive {
+        color: #4caf50;
+      }
+
+      &.negative {
+        color: #f44336;
+      }
+
+      mat-icon {
+        font-size: 14px;
+        width: 14px;
+        height: 14px;
+        line-height: 14px;
+      }
+    }
+
+    .metric-description {
+      margin: 8px 0;
+      font-size: 12px;
+      color: var(--text-secondary, #757575);
+      line-height: 1.5;
+    }
+
+    button {
+      margin-top: 12px;
+      width: 100%;
+
+      mat-icon {
+        margin-right: 4px;
+      }
+    }
+  }
+}
+
+// User Info Section
+.user-info-section {
+  mat-card {
+    border-radius: 8px;
+    border: 1px solid var(--card-border, #e0e0e0);
+    padding: 16px;
+
+    mat-card-header {
+      margin-bottom: 16px;
+      padding: 0;
+    }
+
+    mat-card-title {
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0;
+      color: var(--text-color, #212121);
+    }
+
+    mat-card-content {
+      padding: 0;
+      margin: 0;
+    }
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 24px;
+
+    @media (max-width: 768px) {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+
+  .info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+
+    .label {
+      font-size: 12px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-secondary, #757575);
+      letter-spacing: 0.5px;
+    }
+
+    .value {
+      font-size: 16px;
+      color: var(--text-color, #212121);
+      word-break: break-word;
+
+      &.role-value {
+        padding: 4px 12px;
+        border-radius: 4px;
+        display: inline-block;
+        width: fit-content;
+        font-weight: 600;
+        background-color: var(--badge-bg, #e3f2fd);
+        color: var(--primary-color, #1976d2);
+
+        &.admin {
+          background-color: #fff3e0;
+          color: #e65100;
+        }
+      }
+    }
+  }
+}
+
+// Dark mode support
+:host-context(.dark-theme) {
+  .dashboard-header {
+    border-bottom-color: #424242;
+  }
+
+  .metric-card {
+    border-color: #424242;
+
+    &.admin-card {
+      border-left-color: #ff9800;
+    }
+  }
+
+  .user-info-section {
+    mat-card {
+      border-color: #424242;
+    }
+  }
+}
+
+// Responsive adjustments
+@media (max-width: 1024px) {
+  .dashboard-container {
+    padding: 16px;
+  }
+
+  mat-grid-list {
+    ::ng-deep .mat-grid-tile {
+      max-width: 100% !important;
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .dashboard-container {
+    padding: 12px;
+  }
+
+  .dashboard-header {
+    h1 {
+      font-size: 22px;
+    }
+
+    .subtitle {
+      font-size: 12px;
+    }
+  }
+
+  .section-title {
+    font-size: 16px;
+  }
+
+  .metric-card {
+    mat-card-content {
+      .metric-value {
+        font-size: 24px;
+      }
+
+      h3 {
+        font-size: 12px;
+      }
+    }
+  }
+
+  mat-grid-list {
+    ::ng-deep .mat-grid-list {
+      // Force single column on small screens
+      [cols="2"] {
+        grid-template-columns: 1fr !important;
+      }
+    }
+  }
+}

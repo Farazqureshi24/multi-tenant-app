@@ -1,0 +1,83 @@
+<div class="topnav-container">
+  <!-- Top Navigation Bar -->
+  <mat-toolbar color="primary" class="top-navbar">
+    <div class="navbar-content">
+      <div class="logo-section">
+        <img *ngIf="tenantService.getTenant()?.logo" 
+             [src]="tenantService.getTenant()?.logo" 
+             alt="Logo"
+             class="logo">
+        <span class="app-name">{{ tenantService.getTenant()?.appName }}</span>
+      </div>
+
+      <!-- Horizontal Navigation -->
+      <nav class="horizontal-nav">
+        <a *ngFor="let item of navigationItems" 
+           [routerLink]="item.route"
+           class="nav-link">
+          <mat-icon>{{ item.icon }}</mat-icon>
+          <span>{{ item.label }}</span>
+        </a>
+      </nav>
+
+      <div class="navbar-spacer"></div>
+
+      <div class="header-actions">
+        <button mat-icon-button (click)="toggleTheme()" [matTooltip]="isDarkMode() ? 'Light Mode' : 'Dark Mode'">
+          <mat-icon>{{ isDarkMode() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="notificationMenu">
+          <mat-icon matBadge="3" matBadgeColor="warn">notifications</mat-icon>
+        </button>
+
+        <button mat-icon-button [matMenuTriggerFor]="userMenu">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+      </div>
+    </div>
+  </mat-toolbar>
+
+  <!-- Notification Menu -->
+  <mat-menu #notificationMenu="matMenu" class="notification-menu">
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>New account created</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>info</mat-icon>
+      <span>Transaction pending</span>
+    </button>
+    <button mat-menu-item>
+      <mat-icon>warning</mat-icon>
+      <span>Alert: Low balance</span>
+    </button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>View all notifications</button>
+  </mat-menu>
+
+  <!-- User Menu -->
+  <mat-menu #userMenu="matMenu">
+    <div class="menu-header">
+      <p><strong>{{ authService.getCurrentUser()?.fullName }}</strong></p>
+      <p class="user-email">{{ authService.getCurrentUser()?.email }}</p>
+      <p class="user-role" [class.admin]="authService.isAdmin()">
+        {{ authService.getCurrentUser()?.role | uppercase }}
+      </p>
+    </div>
+    <mat-divider></mat-divider>
+    <button mat-menu-item>Profile</button>
+    <button mat-menu-item>Preferences</button>
+    <button mat-menu-item>Account Settings</button>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="logout()">
+      <mat-icon>logout</mat-icon>
+      <span>Logout</span>
+    </button>
+  </mat-menu>
+
+  <!-- Main Content Area -->
+  <div class="main-content-area">
+    <router-outlet></router-outlet>
+  </div>
+</div>
